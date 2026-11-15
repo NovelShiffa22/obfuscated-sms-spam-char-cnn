@@ -12,11 +12,6 @@ The project detects Indonesian SMS spam that uses character-level obfuscation (l
 | `02_Model_Comparison_Evaluation.ipynb` | 10-model benchmark, adversarial robustness suite, multi-seed stability, group-cluster bootstrap CIs, efficiency measurements |
 | `models/char_cnn_spam_model.keras` | Trained Char-CNN (restored best-validation-loss checkpoint) |
 | `models/tokenizer_char.pkl` | Deterministic character tokenizer (41-character vocabulary) |
-| `results/split_manifest.csv` | Privacy-safe split manifest: `msg_id`, `group_id`, `source_group`, `label`, `partition`, `outer_fold` |
-| `results/epoch_validation_log.csv` | Per-epoch training and validation loss/accuracy |
-| `results/test_predictions_manifest.csv` | Per-message test probabilities and predictions for all 10 models |
-| `results/benchmark_holdout_results.csv` | Holdout test metrics for all models |
-| `results/ablation_study_results.csv` | Augmentation ablation (Char-CNN vs. Word-CNN) |
 | `requirements.txt` | Exact library versions |
 
 ## Method summary
