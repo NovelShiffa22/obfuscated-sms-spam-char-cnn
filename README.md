@@ -1,6 +1,6 @@
 # Obfuscated SMS Spam Detection with a Character-Level CNN
 
-Code, trained model, and evaluation artifacts for the paper **"Detection of Obfuscated SMS Spam Using Character-Level Convolutional Neural Networks"**.
+Code and trained model for the paper **"Detection of Obfuscated SMS Spam Using Character-Level Convolutional Neural Networks"**.
 
 The project detects Indonesian SMS spam that uses character-level obfuscation (leetspeak digits, inserted dots, dropped vowels). A Char-CNN with parallel 1D convolutions reads raw characters, so it does not depend on a word vocabulary that obfuscation breaks.
 
@@ -10,9 +10,10 @@ The project detects Indonesian SMS spam that uses character-level obfuscation (l
 |---|---|
 | `01_Proposed_Model_Training.ipynb` | Corpus audit, template grouping, grouped train/val/test split, training augmentation, Char-CNN training, holdout test, augmentation ablation |
 | `02_Model_Comparison_Evaluation.ipynb` | 10-model benchmark, adversarial robustness suite, multi-seed stability, group-cluster bootstrap CIs, efficiency measurements |
-| `models/char_cnn_spam_model.keras` | Trained Char-CNN (restored best-validation-loss checkpoint) |
-| `models/tokenizer_char.pkl` | Deterministic character tokenizer (41-character vocabulary) |
-| `requirements.txt` | Exact library versions |
+| `char_cnn_spam_model.keras` | Trained Char-CNN (restored best-validation-loss checkpoint) |
+| `tokenizer_char.pkl` | Deterministic character tokenizer (41-character vocabulary) |
+
+Running the notebooks regenerates the remaining artifacts (split manifest, per-epoch validation log, per-message test predictions, benchmark and ablation tables).
 
 ## Method summary
 
@@ -34,7 +35,7 @@ The project detects Indonesian SMS spam that uses character-level obfuscation (l
 | Word-LSTM | 1.0000 | 1.0000 | 1.0000 | 0.00 |
 | Char n-gram SVM | 0.9020 | 0.9425 | 1.0000 | 0.50 |
 
-All 10 models are in `results/benchmark_holdout_results.csv`. The test set is small, so differences between most models are within the bootstrap confidence intervals reported in notebook 02; please read the absolute numbers with that in mind.
+All 10 models are compared in notebook 02. The test set is small, so differences between most models are within the bootstrap confidence intervals reported there; please read the absolute numbers with that in mind.
 
 **Robustness (synthetic perturbations of test spam, plus numeric ham traps):**
 
@@ -57,11 +58,11 @@ The notebooks were developed and run in Google Colab.
 3. Run all cells. This produces the split manifest, trained model, and tokenizer.
 4. Open `02_Model_Comparison_Evaluation.ipynb` in the same session and run all cells.
 
-All random seeds are fixed (`SEED = 42`, `PYTHONHASHSEED`, `TF_DETERMINISTIC_OPS=1`). Reported results were produced with Python 3.13, TensorFlow 2.21, scikit-learn 1.6.1, NumPy 2.4, and pandas 2.2.3. Minor numeric differences can occur across hardware and TensorFlow builds. Exact versions are listed in `requirements.txt`.
+All random seeds are fixed (`SEED = 42`, `PYTHONHASHSEED`, `TF_DETERMINISTIC_OPS=1`). Reported results were produced with Python 3.13, TensorFlow 2.21, scikit-learn 1.6.1, NumPy 2.4, and pandas 2.2.3. Minor numeric differences can occur across hardware and TensorFlow builds.
 
 ## Data availability
 
-The SMS messages were collected from volunteers and an archive of categorized spam and contain personal information, so the raw corpus is **not redistributed**. `results/split_manifest.csv` provides the partition of every message by anonymized ID and template group, and `results/test_predictions_manifest.csv` provides per-message test predictions, so the reported metrics can be re-computed without the text.
+The SMS messages were collected from volunteers and an archive of categorized spam and contain personal information, so the raw corpus is **not redistributed**.
 
 To rerun the notebooks on your own data, provide an Excel file `combined_dataset.xlsx` (sheet `Sheet1`) with columns:
 
@@ -73,7 +74,7 @@ To rerun the notebooks on your own data, provide an Excel file `combined_dataset
 
 ## Loading the trained model
 
-`models/tokenizer_char.pkl` stores an instance of `DeterministicCharTokenizer`, so the class (defined in notebook 01, section 5) must exist before unpickling.
+`tokenizer_char.pkl` stores an instance of `DeterministicCharTokenizer`, so the class (defined in notebook 01, section 5) must exist before unpickling.
 
 ```python
 import pickle
@@ -81,8 +82,8 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 # define clean_text, CHAR_TO_IDX and DeterministicCharTokenizer as in notebook 01
-model = load_model("models/char_cnn_spam_model.keras")
-with open("models/tokenizer_char.pkl", "rb") as f:
+model = load_model("char_cnn_spam_model.keras")
+with open("tokenizer_char.pkl", "rb") as f:
     tokenizer = pickle.load(f)
 
 texts = ["selamat nomor anda memenangkan 10 juta"]
@@ -98,7 +99,7 @@ print(model.predict(x))  # probability of SPAM; threshold 0.5
 
 ## License
 
-Code: MIT. Model weights and manifests: for research use. (Replace with your preferred license.)
+Code: MIT. Model weights: for research use. (Replace with your preferred license.)
 
 ## Citation
 
